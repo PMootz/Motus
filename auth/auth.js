@@ -13,12 +13,12 @@ let redisClient = createClient({
   host: '127.0.0.1',
   port: 6379,
 })
-/*redisClient.connect().catch(console.error)
+redisClient.connect().catch(console.error)
 
 // Initialize store.
 let redisStore = new RedisStore({
   client: redisClient,
-})*/
+})
 
 app.listen(3003);
 
