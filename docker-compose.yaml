@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+ app1:
+   image : nodejs-page
+   ports:
+    - "3010:3010"
+ app2:
+   image : nodejs-motus
+   ports:
+    - "3000:3000"
+ app3:
+   image : nodejs-auth
+   ports:
+    - "3003:3003"
+ app4:
+   image : nodejs-score
+   ports:
+    - "3002:3002"
+ app5:
+   image : nodejs-redirection
+   ports:
+    - "3004:3004"
