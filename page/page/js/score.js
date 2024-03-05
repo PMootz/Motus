@@ -1,5 +1,8 @@
 const tableBody = document.getElementById('table');
 var dataArray
+
+//Call the data from the score in order to display
+// For now it show only the first score, but we plan to show the user and below the five highest user
 $.get('http://localhost:3002/getScore',function(data){
     dataArray = data;
     dataArray = dataArray.split(';');
@@ -15,6 +18,8 @@ $.get('http://localhost:3002/getScore',function(data){
     row.appendChild(avg)
     tableBody.appendChild(row)
 })
+
+//Show user if connected
 $.get('/user', function(data){
     if(!(data === 'undefined')){
         $('#user').text(data);

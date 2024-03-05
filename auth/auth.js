@@ -52,6 +52,7 @@ app.use(
      redirectUri = req.query.redirect_uri
      res.redirect('/')
    })
+
 app.get('/user', function (req, res) {
     if (!(req.session.user === "undefined")){
         res.send(escapeHtml(req.session.user))
@@ -63,7 +64,7 @@ app.get("/session",(req,res)=>{
 })
 
 
-
+//create the new user if doesn't exist
 app.get('/create', function (req, res) {
   console.log(req.query)
     if(checkIdToFile(req.query.user,req.query.pass)){
@@ -76,6 +77,7 @@ app.get('/create', function (req, res) {
     }
   })
 
+  //manage the login par of the app
 app.get('/login', express.urlencoded({ extended: false }), function (req, res) {
     // login logic to validate req.body.user and req.body.pass
     // would be implemented here. for this example any combo works
@@ -120,9 +122,8 @@ app.get('/login', express.urlencoded({ extended: false }), function (req, res) {
     })
   })
 
-  app.get('/logout', function (req, res, next) {
-    // logout logic
-  
+
+  app.get('/logout', function (req, res, next) {  
     // clear the user from the session object and save.
     // this will ensure that re-using the old session id
     // does not have a logged in user
@@ -139,6 +140,7 @@ app.get('/login', express.urlencoded({ extended: false }), function (req, res) {
     })
   })
 
+  //add the new user in the json
   function checkIdToFile(id, pass) {
     fs.readFile('auth.json', 'utf8', (err, data) => {
       let jsonData = {};
@@ -199,6 +201,7 @@ app.get('/login', express.urlencoded({ extended: false }), function (req, res) {
     });
 }
 
+//check if the user is in the file
 function checkIdFromFile(id, pass, callback) {
     fs.readFile('auth.json', 'utf8', (err, data) => {
         if (err) {

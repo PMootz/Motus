@@ -7,6 +7,7 @@ const { createClient } = require('redis');
 const app = express();
 const port = 3002;
 
+//Create redis client
 let redisClient = createClient({
     host: '127.0.0.1',
     port: 6379,
@@ -19,6 +20,7 @@ const redisStore = new RedisStore({
     ttl: 3600,
   })
 
+  //ise Redis session store
 app.use(session({
     store: redisStore,
       secret: 'keyboard cat',
@@ -46,25 +48,31 @@ app.use(session({
     res.send('ok')
 });*/
 
+//Set score of the user in the json file
 app.get('/setScore', (req, res) => {
     let user ="undefined"
     console.log(req.session.user)
+    //if the user session value is defined, save the score with this user
     if (req.session.user) {
         user = req.session.user
         console.log(req.session.user)
     }
     let nbTr = parseInt(req.query.nb)
+    //Save the parameter in the json
     saveScoreToFile(nbTr, user);
     res.setHeader("Access-Control-Allow-Origin","*")
     res.send('ok')
 });
 
+//Get the score from the connected user
 app.get('/getScore', (req, res) => { 
     let user ="undefined"
+     //if the user session value is defined, get the user score
     if (req.session.user) {
         user = req.session.user
         console.log(req.session.user)
     }
+    //search the user in the json
     readScoreFromFile((user),(err, scoreData) => {
         if (err) {
             return;
@@ -75,17 +83,7 @@ app.get('/getScore', (req, res) => {
     });
 });
 
-/*function saveScoreToFile(score, nbTry) {
-    const data = JSON.stringify({ score, nbTry});
-    fs.writeFile('score.json', data, (err) => {
-        if (err) {
-            console.error('Error saving score to file:', err);
-        } else {
-            console.log('Score saved to file successfully');
-        }
-    });
-}*/
-
+// Save the score in the json file
 function saveScoreToFile(nbTry, userA) {
     fs.readFile('score.json', 'utf8', (err, data) => {
         if (err) {
@@ -101,9 +99,11 @@ function saveScoreToFile(nbTry, userA) {
             console.error('Error parsing JSON data:', error);
             return;
         }
+        //Create the parameter for the json
         const newUser = { pseudo: userA, score: 1, nbTry : nbTry };
-
+        //adapt it in the json format
         const { users } = jsonData;
+        //search if the user already exist in the file, in order to either create it or add it in the existing one
         const existingUserIndex = users.findIndex(user => user.pseudo === newUser.pseudo);
         if (existingUserIndex !== -1) {
             // Update existing user
@@ -129,25 +129,7 @@ function saveScoreToFile(nbTry, userA) {
     
 }
 
-/*function readScoreFromFile(callback) {
-    fs.readFile('score.json', 'utf8', (err, data) => {
-        if (err) {
-            console.error('Error reading score from file:', err);
-            callback(err, null);
-            return;
-        }
-
-        try {
-            const scoreData = JSON.parse(data);
-            const { score, nbTry } = scoreData;
-            callback(null, { score, nbTry });
-        } catch (parseError) {
-            console.error('Error parsing JSON:', parseError);
-            callback(parseError, null);
-        }
-    });
-}*/
-
+//Search the user in the json file. Because readfile is special we need to use the callback
 function readScoreFromFile(userA, callback) {
     fs.readFile('score.json', 'utf8', (err, data) => {
         if (err) {
@@ -157,8 +139,11 @@ function readScoreFromFile(userA, callback) {
         }
 
         try {
+            //save the json in another format
             const scoreData = JSON.parse(data);
+            //extract the users
             const { users } = scoreData;
+            //search in the user if the connected is in the file
             const existingUserIndex = users.findIndex(user => user.pseudo === userA);
             let score =0
             let nbTry =5
@@ -168,6 +153,7 @@ function readScoreFromFile(userA, callback) {
                 nbTry = parseInt(users[existingUserIndex].nbTry);
             }
             else{
+                //add he score in the undefined user
                 score = parseInt(users[0].score);
                 nbTry = parseInt(users[0].nbTry);
             }

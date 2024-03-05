@@ -5,6 +5,7 @@ const { createClient } = require('redis');
 
 const app = express()
 
+//Initialize and connectthe redisClient
 let redisClient = createClient({
   host: '127.0.0.1',
   port: 6379,
@@ -19,6 +20,7 @@ let redisStore = new RedisStore({
 
 const port = 3010
 
+//Use Redis to connect to the commun sRedis session store
 app.use(session({
   store: redisStore,      
     secret: 'keyboard cat',

@@ -3,18 +3,23 @@ var value=0;
 var nbTry=5;
 var win= false;
 
+//Validate the answer when pressing enter in the answer text
 enterB.addEventListener("keypress", function(event){
   if(event.key === "Enter"){
+    //cancel the default action of enter
     event.preventDefault();
     document.getElementById("Check").click();
   }
 });
+
+//Show user in nav bar if exist
 $.get('/user', function(data){
   if(!(data === 'undefined')){
       $('#user').text(data);
   }
 })
 
+//When the page is open, call the api wordNb that return the number of letter in the word to guess
 $(document).ready(function(){
   $.get('http://localhost:3000/wordNb',function(data){
   var rNb= $('#nbTry');
@@ -23,6 +28,7 @@ $(document).ready(function(){
   });
 })
 
+
 document.getElementById("Check").addEventListener("click", function(event){
   event.preventDefault();
   const answerValue = $('#answer').val();
@@ -30,15 +36,18 @@ document.getElementById("Check").addEventListener("click", function(event){
   if (answerValue.trim() === "") {
     alert("Veuillez entrer un mot");
     return; // Stop further execution
-  }
+  } //Check if the lenght is correct
   else if(answerValue.length != value){
     alert("Votre mot doit faire exactement " +value + " charactères");
     return; // Stop further execution
-  }
+  } // check if you can play the game
   else if(nbTry<=0 ||win){
     alert("Le jeux est fini pour aujourd'hui");
     return; // Stop further execution
   }
+
+  //Call api check to know if the word is found or not. 
+  //data is a table with the same size as the word, each index has a number, 0 if the letter doesn't exist in the word, 1 if it is on the wrong place, 2 if it is correct
   $.get('http://localhost:3000/check?word='+$('#answer').val(),function(data){
 
   var resultsContainer = $('#results-container');
@@ -52,6 +61,7 @@ document.getElementById("Check").addEventListener("click", function(event){
   for (var i = 0; i < data.length; i++) {
     // Create a new div for each character
     var charDiv = $('<div>').text(answerValue[i]);
+    //Check if one of the letter isn't correct, to know if it is the good answer
     if(data[i] != 2){
       result = false;
     }
@@ -64,6 +74,7 @@ document.getElementById("Check").addEventListener("click", function(event){
   if(result){
     resultA.text("Bonne réponse !");
     win=true;
+    //Save the score in the Score API, for now we hope that score find the user, otherwise we will have to send it
     $.get('http://localhost:3002/setScore?nb='+(5-nbTry))
   }
   else{
@@ -71,6 +82,7 @@ document.getElementById("Check").addEventListener("click", function(event){
   }
 });
 
+//function that return the class to add depending of the color we want
 function getColorForCharacter(char) {
   switch (char) {
     case 0:
