@@ -1,23 +1,31 @@
 version: '3.8'
 
 services:
- app1:
-   image : nodejs-page
+ web:
+   build : ./page
    ports:
     - "3010:3010"
- app2:
-   image : nodejs-motus
+ app1:
+   build : ./motus
    ports:
     - "3000:3000"
+ app2:
+   build : ./motus
+   ports:
+    - "3001:3001"
  app3:
-   image : nodejs-auth
+   build : ./auth
    ports:
     - "3003:3003"
  app4:
-   image : nodejs-score
+   build: ./score
    ports:
     - "3002:3002"
  app5:
-   image : nodejs-redirection
+   build: ./redirector
    ports:
     - "3004:3004"
+ haproxy:
+    build: ./haproxy
+    ports:
+      - "80:80"
