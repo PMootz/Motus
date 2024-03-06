@@ -4,6 +4,7 @@ const express = require('express')
 const { createClient } = require('redis');
 var escapeHtml = require('escape-html')
 const fs = require('fs');
+const crypto = require('crypto');
 
 
 const app = express()
@@ -65,6 +66,8 @@ app.get("/session",(req,res)=>{
 
 
 //create the new user if doesn't exist
+//Input : the user ud and the user password
+//Output : A message telling if the user has been saved or not
 app.get('/create', function (req, res) {
   console.log(req.query)
     if(checkIdToFile(req.query.user,req.query.pass)){
@@ -78,6 +81,10 @@ app.get('/create', function (req, res) {
   })
 
   //manage the login par of the app
+  /**
+   * Input : user id and password
+   * Output :  If the login succed or fail
+   */
 app.get('/login', express.urlencoded({ extended: false }), function (req, res) {
     // login logic to validate req.body.user and req.body.pass
     // would be implemented here. for this example any combo works
@@ -123,6 +130,9 @@ app.get('/login', express.urlencoded({ extended: false }), function (req, res) {
   })
 
 
+/**
+ * destroy the session user
+ */
   app.get('/logout', function (req, res, next) {  
     // clear the user from the session object and save.
     // this will ensure that re-using the old session id
@@ -141,6 +151,11 @@ app.get('/login', express.urlencoded({ extended: false }), function (req, res) {
   })
 
   //add the new user in the json
+  /**
+   * 
+   * @param {user} id The user name
+   * @param {pass} pass The user password
+   */
   function checkIdToFile(id, pass) {
     fs.readFile('auth.json', 'utf8', (err, data) => {
       let jsonData = {};
@@ -175,6 +190,7 @@ app.get('/login', express.urlencoded({ extended: false }), function (req, res) {
             console.log(jsonData)
           // Check if the id already exists
           if (!(jsonData.users.some(user => user.id === id))) {
+              pass = hashPassword(pass)
               const newUser = { id: id, pass: pass };
               jsonData.users.push(newUser);
               
@@ -202,6 +218,12 @@ app.get('/login', express.urlencoded({ extended: false }), function (req, res) {
 }
 
 //check if the user is in the file
+/**
+ * 
+ * @param {user} id the user name
+ * @param {pass} pass the password
+ * @param {*} callback  the return
+ */
 function checkIdFromFile(id, pass, callback) {
     fs.readFile('auth.json', 'utf8', (err, data) => {
         if (err) {
@@ -213,15 +235,33 @@ function checkIdFromFile(id, pass, callback) {
             const idData = JSON.parse(data);
             console.log(idData)
             console.log(idData.users.some(user => user.id === id && user.pass === pass))
-            answer = idData.users.some(user => user.id === id && user.pass === pass)
-            callback(null,answer)
-
+            const user = idData.users.find(user => user.id === id);
+            if (!user) {
+                callback(null, false); // User not found
+                return;
+            }
+            // Verify the provided password against the stored hash
+            const passwordMatch = verifyPassword(pass, user.pass);
+            callback(null, passwordMatch);
             
         } catch (parseError) {
             console.error('Error parsing JSON:', parseError);
             callback(parseError,false)
         }
     });
+}
+
+// Function to hash a password using SHA-256
+function hashPassword(password) {
+  const hash = crypto.createHash('sha256');
+  hash.update(password);
+  return hash.digest('hex');
+}
+
+// Function to check if the provided password matches the stored hash
+function verifyPassword(inputPassword, storedHash) {
+  const inputHash = hashPassword(inputPassword);
+  return inputHash === storedHash;
 }
 
 app.listen(() =>{
