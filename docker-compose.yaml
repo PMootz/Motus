@@ -9,10 +9,6 @@ services:
    build : ./motus
    ports:
     - "3000:3000"
- app2:
-   build : ./motus
-   ports:
-    - "3001:3001"
  app3:
    build : ./auth
    ports:
@@ -20,12 +16,4 @@ services:
  app4:
    build: ./score
    ports:
-    - "3002:3002"
- app5:
-   build: ./redirector
-   ports:
-    - "3004:3004"
- haproxy:
-    build: ./haproxy
-    ports:
-      - "80:80"
+    - "3008:3008"
