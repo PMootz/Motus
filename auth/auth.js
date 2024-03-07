@@ -1,27 +1,23 @@
-const RedisStore = require("connect-redis").default
 const session = require('express-session')
 const express = require('express')
-const { createClient } = require('redis');
 var escapeHtml = require('escape-html')
 const fs = require('fs');
 const crypto = require('crypto');
+const jwt = require('jsonwebtoken');
 
 
 const app = express()
 
-// Initialize client.
-let redisClient = createClient({
-  host: '127.0.0.1',
-  port: 6379,
-})
-redisClient.connect().catch(console.error)
-
-// Initialize store.
-let redisStore = new RedisStore({
-  client: redisClient,
-})
-
 app.listen(3003);
+
+app.use(session({
+  secret: 'secret-key',
+  resave: false,
+  saveUninitialized: false,
+  cookie: { 
+    maxAge: 3600000,
+    secure: true }
+}));
 
 // Initialize session storage.
 app.use(express.static('page'));
@@ -29,14 +25,29 @@ app.use(express.static('page'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use(
-  session({
-    store: redisStore,
-    resave: false, // required: force lightweight session keep alive (touch)
-    saveUninitialized: false, // recommended: only save session when data exists
-    secret: "keyboard cat",
-  }),
-)
+
+app.get('/',(req,res) => {
+  const user = req.session.user;
+});
+var uri =''
+const codeStore = [];
+const secretKey = 'Crounch';
+
+app.get('/authorize', (req, res) => {
+  const { client_id, scope, redirect_uri } = req.query;
+  // Perform the client id check
+  if (client_id !== 'motus') {
+      return res.status(400).send('Invalid client ID');
+  }
+  if (scope !== 'openid') {
+      return res.status(400).send('Invalid scope');
+  }
+  if (redirect_uri !== 'http://localhost:3010/uri') {
+      return res.status(400).send('Invalid redirect URI');
+  }
+  uri = redirect_uri
+  res.redirect("/")
+});
 
 /*app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*'); // Allow requests from all origins
@@ -44,9 +55,6 @@ app.use(
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type'); // Specify allowed headers
     next();
   });*/
-
- //var redirectUri 
- const codeStore ={};
 
  app.get('/save', function (req, res) {
      // this is only called when there is an authentication user due to isAuthenticated
@@ -93,32 +101,34 @@ app.get('/login', express.urlencoded({ extended: false }), function (req, res) {
     // guard against forms of session fixation
     req.session.regenerate(function (err) {
       if (err) next(err)
+      if(req.session.user) {
+        req.session.destroy((err) => {
+          if (err) {
+            console.log(err);
+          } 
+        })
+      }
       const { user, pass } = req.query;
-    //console.log(checkIdFromFile(user,pass))
       checkIdFromFile(user,pass, (err, exists) => {
         if(err){
           console.log("error")
         }
         else{
           if(exists){
-  
       // store user information in session, typically a user id
         req.session.user = req.query.user
         const session = req.session
         session.username = req.query.user
         session.password = req.query.pass
         // Generate random code
-        const code = Math.random().toString(36).substr(2, 6).toUpperCase();
+        const code = Math.random().toString(36).substr(2, 12).toUpperCase();
             
         // Store code along with client login information
-        codeStore[code] = { user, pass};
-      // save the session before redirection to ensure page
-      // load does not happen before session is saved
-        //res.send('hello, ' + escapeHtml(req.session.user) + '!' +' <a href="/logout">Logout</a>')
-        res.type('html')
-        res.send('Successfully logged in!')
-        //res.setHeader('Access-Control-Allow-Origin', '*');
-        //res.redirect(`http://localhost:3005/redirect?redirect_uri=${redirectUri}&code=${code}`)
+        codeStore.push({ user, code});
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        res.redirect(`${uri}?code=${code}`)
+        //const redirectUrl = `${uri}?code=${code}`; //a revenir comme avant
+        //res.json({ redirectUrl }); 
       }
       else{
         res.type('html')
@@ -133,21 +143,36 @@ app.get('/login', express.urlencoded({ extended: false }), function (req, res) {
 /**
  * destroy the session user
  */
-  app.get('/logout', function (req, res, next) {  
-    // clear the user from the session object and save.
-    // this will ensure that re-using the old session id
-    // does not have a logged in user
-    req.session.user = null
-    req.session.save(function (err) {
-      if (err) next(err)
-  
-      // regenerate the session, which is good practice to help
-      // guard against forms of session fixation
-      req.session.regenerate(function (err) {
-        if (err) next(err)
-        res.redirect('/')
-      })
+  app.get('/logout', function (req, res) {  
+    req.session.destroy((err) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.redirect('/');
+      }
     })
+  })
+
+  app.get('/token',function (req, res) {  
+    var code = req.query.code;
+    const entry = codeStore.find(entry => entry.code === code);
+    if(!entry){
+      return res.status(400).send('The code doesn\'t exist');
+    }
+    else{
+      userId = entry.user
+      jwt.sign({ userId }, secretKey, { expiresIn: '1h' }, (err, token) => {
+        if (err) {
+          console.error('Error generating token:', err);
+          return res.status(500).json({ error: 'Internal server error' });
+        }
+    
+        // Return the token in the response
+        //res.json({ id_token: token });
+      res.setHeader("Access-Control-Allow-Origin","*")
+      res.redirect(`http://localhost:3010/newUser?token=${token}`);
+    })
+  }
   })
 
   //add the new user in the json
@@ -156,6 +181,7 @@ app.get('/login', express.urlencoded({ extended: false }), function (req, res) {
    * @param {user} id The user name
    * @param {pass} pass The user password
    */
+
   function checkIdToFile(id, pass) {
     fs.readFile('auth.json', 'utf8', (err, data) => {
       let jsonData = {};
@@ -187,7 +213,7 @@ app.get('/login', express.urlencoded({ extended: false }), function (req, res) {
         else {
           try {
           let jsonData = JSON.parse(data);
-            console.log(jsonData)
+            //console.log(jsonData)
           // Check if the id already exists
           if (!(jsonData.users.some(user => user.id === id))) {
               pass = hashPassword(pass)
@@ -233,8 +259,7 @@ function checkIdFromFile(id, pass, callback) {
         }
         try {
             const idData = JSON.parse(data);
-            console.log(idData)
-            console.log(idData.users.some(user => user.id === id && user.pass === pass))
+            //console.log(idData.users.some(user => user.id === id && user.pass === pass))
             const user = idData.users.find(user => user.id === id);
             if (!user) {
                 callback(null, false); // User not found
