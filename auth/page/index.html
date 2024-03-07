@@ -9,21 +9,18 @@
 </head>
 <body>
   <nav>
-    <a href="http://localhost:3010">Acceuil</a>
-    <a href="http://localhost:3010/motus.html">Motus</a>
-    <a href="http://localhost:3010/score.html">Score</a>
     <a href="index.html">Authentification</a>
     <a id="user"></a>
   </nav>
   <h1>Login</h1>
-  <form>
-    <label for="log"> Login </label>
-    <input type="text" id="log" name="log">
+  <form action="/login" method="get" >
+    <label for="user"> Login </label>
+    <input type="text" id="user" name="user">
     <br/>
     <label for="pass"> Password </label>
     <input type="password" id="pass" name="pass">
+    <button type="submit" id="connexion">Connexion</button>
    </form>
-   <button id="connexion">Connexion</button>
    <div id="noAcc">Don't have an account? <a href="register.html"> Click here</a></div>
    <div id="reponse"></div>
 
