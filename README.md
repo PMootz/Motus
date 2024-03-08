@@ -33,9 +33,13 @@ For now we use json to store the score and the user. But we want to store it in 
 Télécharger le code sur le gitHub
 Ouvrir un terminal et aller sur le dossier correspondant
 Entrer la commande suivante :
-```docker compose up --build```
+```shell
+docker compose up --build
+```
 
-Il suffira alors de se rendre sur ```http://localhost:3010```
+Il suffira alors de se rendre sur ```html
+http://localhost:3010
+```
 ## Diagrams
 
 Connection à l'application
