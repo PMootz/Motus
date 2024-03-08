@@ -1,5 +1,6 @@
 nav{
   background-color: #dd1406;
+  background-color: #dd1406;
   overflow: hidden;
   border-color: black;
 }
@@ -29,6 +30,7 @@ nav a:last-child{
 body{
   background-color: antiquewhite;
   text-align: center; /* Center vertically */
+  font-family: Arial, Helvetica, sans-serif;
   font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -100,7 +102,56 @@ table {
     color: white;
   }
 
+  input {
+    margin: 1em;
+    padding: 10px 42px;
+    font-size: 16px;
+  }
+
+  button {
+    border: none;
+    color: white;
+    padding: 10px 18px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    transition-duration: 0.4s;
+    cursor: pointer;
+  }
+  
+
+  button {
+    background-color: white; 
+    color: black; 
+    border: 2px solid #dd1406;
+  }
+  
+  button:hover {
+    background-color: #dd1406;
+    color: white;
+  }
+
   .resultDiv {
+    text-align: center;
+  }
+
+  #result {
+    margin-bottom: 1em;
+  }
+
+  .box {
+    width: 2.5em;
+    height: 2.5em;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 1px;
+    color:white;
+    text-align: middle;
+    font-size: 2em;
+
     text-align: center;
   }
 
@@ -126,6 +177,7 @@ table {
     border: 1px solid black;
     color:white;
     vertical-align: middle;
+    text-align: center;
     text-align: center;
   }
 
