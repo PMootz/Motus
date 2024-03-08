@@ -37,9 +37,8 @@ Entrer la commande suivante :
 docker compose up --build
 ```
 
-Il suffira alors de se rendre sur ```html
-http://localhost:3010
-```
+Il suffira alors de se rendre sur http://localhost:3010
+
 ## Diagrams
 
 Connection à l'application
