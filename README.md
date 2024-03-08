@@ -14,38 +14,37 @@ Lorsque le joueur se rend sur la page des scores, il peut y voir son score total
 
 Ce qui fonctionne :
 
-- Le jeu du Motus ainsi que le calcul des scores par utilisateur
-- L'authentification pour la création d'un users
-- L'authentification depuis un user déjà créée
+- Le jeu du Motus ainsi que le calcul des scores par utilisateurs
+- L'authentification pour la création d'un user
+- L'authentification depuis un user déjà créé
 
 
 Nous avons utilisé une base json pour stocker les scores, le nom d'utilisateur, le mot de passe et le nombre de tentatives. Nous avons séparé en deux parties distinctes : mot de passe et scores, nombre de tentatives.
-Nous avons réalisé les fonctions permettant d'enregistrer, de modifier et d'obtenir le score ou le nombre d'essaies à partir d'un nom d'utilisateur. 
+Nous avons réalisé les fonctions permettant d'enregistrer, de modifier et d'obtenir le score ou le nombre d'essais à partir d'un nom d'utilisateur. 
 Nous avons aussi réalisé la fonction permettant d'enregistrer un mot de passe avec un nom d'utilisateur ainsi qu'une méthode pour s'assurer que chaque nom d'utilisateur est unique.
 
-Nous pouvons nous déconnecté à tout moment en cliquant sur le nom d'utilisateur situé en haut à droite. Il faudra alors changé de page pour être redirigé vers l'authentification.
+Nous pouvons nous déconnecter à tout moment en cliquant sur le nom d'utilisateur situé en haut à droite. Il faudra alors changer de page pour être redirigé vers l'authentification.
 
-Lorsqu'un utilisateur à déjà joué au jeux dans la journée, il ne peut plus y rejouer pour la journée. Cependant S'il se déconnecte et se reconnecte il peut à nouveau rejouer au jeux.
+Lorsqu'un utilisateur à déjà joué au jeu dans la journée, il ne peut plus y rejouer de la journée. Cependant s'il se déconnecte et se reconnecte il peut à nouveau y rejouer.
 
 Ce qui est en cours :
 
 
-La sauvegarde de ficheier redis ne fonctionne pas totalement lorsque nous le mettons avec le jeu motus. Cela fonctionne uniquement sur l'interface Redis Insight.
-Nous n'arrivons pas à accéder au port 4000 que ce soit via axios ou requête HTTP malgré l'existence du port.
-Nous avons du repasser sur  json pour la base de données pour avoir quelque chose de fonctionnel.
+La sauvegarde de fichier redis ne fonctionne pas totalement lorsque nous le mettons avec le jeu motus. Cela fonctionne uniquement sur l'interface Redis Insight.
+Nous n'arrivons pas à accéder au port 4000 que ce soit via axios ou via la requête HTTP malgrès l'existence du port.
+Nous avons du repasser sur json pour la base de données afin que ce soit fonctionnel.
+La redirection directe vers l'authentification lorsque l'utilisateur a décidé de se déconnecter.
+Conserver dans la base de donnée le dernier jour joué par le joueur pour l'empêcher de rejouer.
 
-Redirigé directement vers l'authentification lorsque l'utilisateur a décidé de se déconnecté.
-Garder dans la base de donnée le dernier jour joué par le joueur pour l'empecher de rejouer.
+Avec le redis, le score des 5 meilleurs joueurs et celui de l'utilisateur devraient s'afficher. Cependant, les problèmes que l'on a rencontré avec redis ne nous ont pas permis de réaliser cette étape.
 
-Avec le redis le score des 5 meilleurs joueurs plus celui de l'utilisateur devaient s'afficher mais les problèmes de redis ont fait arrêté la décision
-
-La haproxy est presque fonctionnel
+Le haproxy est presque fonctionnel, la configuration est prête mais elle ne s'execute pas totalement.
 
 ## Fonctionement du projet
 
-Télécharger le code sur le gitHub
-Ouvrir un terminal et aller sur le dossier correspondant
-Entrer la commande suivante :
+- Télécharger le code sur le gitHub
+- Ouvrir un terminal et aller sur le dossier correspondant
+- Entrer la commande suivante :
 ```shell
 docker compose up --build
 ```
@@ -127,9 +126,9 @@ flowchart LR
 ## Pistes d'améliorations
 
 Pour l'utilisation de Redis nous avons plusieurs pistes d'amélioration. 
-La première est que nous avons sur la même base de donnée la partie authentification et la partie score. Nous les avons seulement séparer par des client différents. Pour les utiliser sur deux bases de données différentes, il faudrait que nous arrivions à utiliser plusieurs url Redis afin de les mettres sur des fichiers js différents.
+La première est que nous avons sur la même base de donnée la partie authentification et la partie score. Nous les avons seulement séparer par des clients différents. Pour les utiliser sur deux bases de données différentes, il faudrait que nous arrivions à utiliser plusieurs url Redis afin de les mettre sur des fichiers js différents.
 
-De plus la fonction permettant d'obtenir le classement des meilleures joueurs avec leur scores ne fonctionne pas correctement en effet en termes d'affichage sur Redis Insight le score est considérer comme un nom d'utilisateur et apparaît la ligne en dessous du nom de l'utilisateur à qui le score est associé.
+De plus la fonction permettant d'obtenir le classement des meilleurs joueurs avec leur scores ne fonctionne pas correctement en effet en termes d'affichage sur Redis Insight le score est considéré comme un nom d'utilisateur et apparaît la ligne en dessous du nom de l'utilisateur à qui le score lui est associé.
 
 Modifier le jeu motus afin d'interdire une combinaison de lettres ne formant pas un mot français d'être testé par le programme.
 
