@@ -16,12 +16,13 @@ Ce qui fonctionne :
 
 - Le jeu du Motus ainsi que le calcul des scores
 - L'authentification pour la création d'un users
+- La création d'une base de donnée Redis et les fonctions permettant de l'utiliser 
 
-For now the game and scoring work.
-There is an issue with the authentification and more precisely the session storage, we use redis but we have problem.
-But we can create an user and authentificate as we want
-If this part is solved we will attache the score to the connected user and display it.
-We have the docker file for each part of the program, it work for now but I didn't add the redis part so it won't work. The docker-compose is also there.
+
+Nous avons réussis à utiliser une base de données rédis pour stocker nos scores, nom d'utilisateur, mot de passe et nombre de tentatives. Nous avons séparer en trois parties distinctes mot de passe scores et nombre de tentatives. Nous avons réalisé les fonctions permettant d'enregistrer, modifier et obtenir le score ou le nombre d'essaies à partir d'un nom d'utilisateur. Nous avons aussi réalisé la fonction permettant d'enregistrer et un mot de passe avec un nom d'utilisateur.
+
+
+
 
 The happroxy is in progress.
 For now we use json to store the score and the user. But we want to store it in redis
@@ -91,8 +92,14 @@ flowchart LR
     B(Page) --->E(Score)
     E(Score) --->B(Page)
     A(User) -->D(Auth)
+    F[(Redis)] ---->D(Auth)
+    D(Auth) ---->F[(Redis)]
+    F[(Redis)] ---->E(Score)
+    E(Score) ---->F[(Redis)]
 ```
 
-## Prochaines étapes
+## Pistes d'améliorations
+
+Pour l'utilisation de Redis nous avons plusieurs pistes d'amélioration. La première étant que nous avons sur la même base de donnée la partie authentification et la partie score. Nous avons seulement séparer par des client différents, pour cela il faudrait que nous arrivions à utiliser plusieurs url redis ainsi que de les mettres sur des fichiers js différents. De plus la fonction permettant d'obtenir le classement des meilleures joueurs avec leur scores ne fonctionne pas correctement en effet en termes d'affichage sur Redis Insight le score est considérer comme un nom d'utilisateur et apparaît la ligne en dessous du nom de l'utilisateur à qui le score est associé.
 
 Modifier le jeu motus afin d'interdire une combinaison de lettres ne formant pas un mot français d'être testé par le programme.
