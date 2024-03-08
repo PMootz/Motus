@@ -42,7 +42,10 @@ actor User
     PC->>+Page: 
     Page->>Page : user
     Page->>+Auth: redirect
-    User->>Auth: authentifier
+    User->>Auth: créer compte
+    Auth->>Auth: create 
+    Auth ->>Redis: setPassword
+    Redis ->>Auth: getPassword
     Auth->>-Page: uri
     Page->>+Auth : token
     Auth->>-Page: new User
@@ -64,7 +67,8 @@ User->>+PC : Motus
         Page->>+Motus : check
         Motus->>-Page : check
         Page->>+Score : SetScore
-        Score->>Score : save
+        Score->>Redis : setScore
+        Redis->>Score : getScore 
         Score-->>-Page : res
     end
     Page->>-PC : Jeu terminé
@@ -77,6 +81,8 @@ actor User
     User->>+PC : voir Score
     PC->>+Page : voir Score 
     Page->>+Score : GetScore
+    Score->>Redis : getScore
+    Redis->>Score : 
     Score->>-Page : res
     Page->>-PC : Afficher Score
 ```
