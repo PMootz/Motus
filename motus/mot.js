@@ -1,49 +1,10 @@
 const express = require('express')
 const fs = require('fs');
-var session = require('express-session')
-const RedisStore = require("connect-redis").default
-const { createClient } = require('redis');
 const seedrandom = require('seedrandom');
 
 const app = express()
 const port = 3000
 
-let redisClient = createClient({
-  host: '127.0.0.1',
-  port: 6379,
-})
-
-redisClient.connect().catch(console.error)
-
-const redisStore = new RedisStore({
-  client: redisClient,
-  ttl: 3600,
-})
-
-//Use the Redis session storage
-app.use(session({
-  store: redisStore,
-    secret: 'keyboard cat',
-    resave: false,
-    saveUninitialized: false
-})) 
-
-//The following commented code is the redirection if the user is not connected, but because of the session problem we have it is still commented
-/*app.use( (req, res) => {
-  if (req.session.user == undefined){
-    const redirectUrl = 'http://localhost:3005/authorize';
-    const openidParams = {
-      client_id: 'motus',
-      redirect_uri: 'http://localhost:3000/', 
-      response_type: 'code',
-      scope: 'openid' // Scopes requested from authentication server
-    };
-    const redirectQuery = new URLSearchParams(openidParams);
-    const fullRedirectUrl = `${redirectUrl}?${redirectQuery}`;
-    res.setHeader("Access-Control-Allow-Origin","*")
-    res.redirect(fullRedirectUrl);
-  }
-});*/
 
 /*app.get('/',(req, res) => {
   if (req.session.user == undefined){

@@ -22,6 +22,10 @@ nav a.active {
   color: white;
 }
 
+nav a:last-child{
+  float: right;
+}
+
 body{
   background-color: antiquewhite;
   text-align: center; /* Center vertically */

@@ -9,9 +9,6 @@
   "author": "Philippe Mootz, Duncan Boukhssibi, Marion Pinoit",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.17.1",
-    "express-session": "^1.18.0",
-    "connect-redis": "7.1.1",
-    "redis": "4.6.13"
+    "express": "^4.17.1"
   }
 }

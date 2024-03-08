@@ -1,32 +1,9 @@
 const express = require('express');
 const fs = require('fs');
-var session = require('express-session')
-const RedisStore = require("connect-redis").default
-const { createClient } = require('redis');
 
 const app = express();
-const port = 3002;
+const port = 3008;
 
-//Create redis client
-let redisClient = createClient({
-    host: '127.0.0.1',
-    port: 6379,
-})
-
-redisClient.connect().catch(console.error)
-
-const redisStore = new RedisStore({
-    client: redisClient,
-    ttl: 3600,
-  })
-
-  //ise Redis session store
-app.use(session({
-    store: redisStore,
-      secret: 'keyboard cat',
-      resave: false,
-      saveUninitialized: false
-}))  
 
 
 /*app.get('/setScore', (req, res) => {
@@ -48,16 +25,18 @@ app.use(session({
     res.send('ok')
 });*/
 
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS'); // Add other methods if necessary
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    next();
+});
+
+
 //Set score of the user in the json file
 app.get('/setScore', (req, res) => {
-    let user ="undefined"
-    console.log(req.session.user)
-    //if the user session value is defined, save the score with this user
-    if (req.session.user) {
-        user = req.session.user
-        console.log(req.session.user)
-    }
     let nbTr = parseInt(req.query.nb)
+    let user = req.query.user
     //Save the parameter in the json
     saveScoreToFile(nbTr, user);
     res.setHeader("Access-Control-Allow-Origin","*")
@@ -66,12 +45,7 @@ app.get('/setScore', (req, res) => {
 
 //Get the score from the connected user
 app.get('/getScore', (req, res) => { 
-    let user ="undefined"
-     //if the user session value is defined, get the user score
-    if (req.session.user) {
-        user = req.session.user
-        console.log(req.session.user)
-    }
+    let user =req.query.user
     //search the user in the json
     readScoreFromFile((user),(err, scoreData) => {
         if (err) {

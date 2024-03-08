@@ -10,7 +10,6 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
-    "express-session": "^1.17.2",
     "seedrandom": "^3.0.5"
   }
 }

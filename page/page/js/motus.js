@@ -74,8 +74,8 @@ document.getElementById("Check").addEventListener("click", function(event){
   if(result){
     resultA.text("Bonne réponse !");
     win=true;
-    //Save the score in the Score API, for now we hope that score find the user, otherwise we will have to send it
-    $.get('http://localhost:3002/setScore?nb='+(5-nbTry))
+      //Save the score in the Score API, for now we hope that score find the user, otherwise we will have to send it
+      $.get('http://localhost:3010/setScore?nb='+(5-nbTry))
   }
   else{
     resultA.text("Mauvaise réponse, veuillez réessayer. Il vous reste " + nbTry + " chance");
