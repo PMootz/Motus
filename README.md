@@ -33,6 +33,7 @@ Ouvrir un terminal et aller sur le dossier correspondant
 Entrer la commande suivante :
 ## Diagrams
 
+Connection à l'application
 ```mermaid
 sequenceDiagram
 actor User
@@ -47,7 +48,7 @@ actor User
     Page->>-PC : authentifier
 ```
 
-
+Jouer au jeux motus
 ```mermaid
 sequenceDiagram
 actor User
@@ -68,6 +69,7 @@ User->>+PC : Motus
     Page->>-PC : Jeu terminé
 ```
 
+Obtenir son score
  ```mermaid
 sequenceDiagram
 actor User
@@ -78,7 +80,7 @@ actor User
     Page->>-PC : Afficher Score
 ```
 
-
+Représentation des interractions entre api
 ```mermaid
 flowchart LR
     A(User) -->B(Page)
