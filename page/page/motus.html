@@ -9,18 +9,22 @@
 </head>
 <body>
   <nav>
-    <a href="index.html">Acceuil</a>
+    <a href="index.html">Accueil</a>
     <a href="motus.html">Motus</a>
     <a href="score.html">Score</a>
     <a id="user"></a>
   </nav>
 <h1>MOTUS</h1>
+<div id="redirectMessage" style="display: none;">
+  <p id="message"></p>
+</div>
 <div id="nbTry"></div>
 <form>
  <label for="answer"> Réponse du Motus </label>
  <input type="text" id="answer" name="answer">
+ <button id="Check">Valider</button>
 </form>
-<button id="Check">Valider</button>
+
 <br>
 <div id="result"></div>
 <div id="results-container"></div>

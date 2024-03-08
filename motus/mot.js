@@ -5,25 +5,6 @@ const seedrandom = require('seedrandom');
 const app = express()
 const port = 3000
 
-
-/*app.get('/',(req, res) => {
-  if (req.session.user == undefined){
-    const redirectUrl = 'http://localhost:3005/authorize';
-    const openidParams = {
-      client_id: 'motus',
-      redirect_uri: 'http://localhost:3000/word', 
-      response_type: 'code',
-      scope: 'openid' // Scopes requested from authentication server
-    };
-    const redirectQuery = new URLSearchParams(openidParams);
-    const fullRedirectUrl = `${redirectUrl}?${redirectQuery}`;
-    res.setHeader("Access-Control-Allow-Origin","*")
-    res.redirect(fullRedirectUrl);
-  }
-});*/
-
-
-
 // Read the contents of the file
 const fileContent = fs.readFileSync('liste_francais_utf8.txt', 'utf-8');
 

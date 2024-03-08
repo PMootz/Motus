@@ -4,3 +4,8 @@ $.get('/user', function(data){
         $('#user').text(data);
     }
 })
+
+document.getElementById("user").addEventListener("click", function(event){
+    console.log("here")
+    $.get('/logout')
+})

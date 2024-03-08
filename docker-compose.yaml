@@ -1,19 +1,18 @@
 version: '3.8'
-
 services:
  web:
    build : ./page
    ports:
     - "3010:3010"
- app1:
+ motus:
    build : ./motus
    ports:
     - "3000:3000"
- app3:
+ auth:
    build : ./auth
    ports:
     - "3003:3003"
- app4:
+ score:
    build: ./score
    ports:
     - "3008:3008"

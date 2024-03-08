@@ -4,27 +4,6 @@ const fs = require('fs');
 const app = express();
 const port = 3008;
 
-
-
-/*app.get('/setScore', (req, res) => {
-    let user ="undefined"
-    if (req.session.user) {
-        user = req.session.user
-    }
-    readScoreFromFile((err, scoreData) => {
-        if (err) {
-            return;
-        }
-        var { score, nbTry } = scoreData;
-        let nbTr = parseInt(req.query.nb)
-        score ++
-        nbTry = nbTry + nbTr
-        saveScoreToFile(score, nbTry);
-    });
-    res.setHeader("Access-Control-Allow-Origin","*")
-    res.send('ok')
-});*/
-
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS'); // Add other methods if necessary
@@ -37,8 +16,9 @@ app.use((req, res, next) => {
 app.get('/setScore', (req, res) => {
     let nbTr = parseInt(req.query.nb)
     let user = req.query.user
+    let score = parseInt(req.query.score)
     //Save the parameter in the json
-    saveScoreToFile(nbTr, user);
+    saveScoreToFile(nbTr, user,score);
     res.setHeader("Access-Control-Allow-Origin","*")
     res.send('ok')
 });
@@ -53,12 +33,15 @@ app.get('/getScore', (req, res) => {
         }
         var { score, nbTry } = scoreData;
         res.setHeader("Access-Control-Allow-Origin","*")
+        if(score ==0){
+            res.send(score + ";" + 0 + ";" +user);
+        }
         res.send(score + ";" + (nbTry/score) + ";" +user);
     });
 });
 
 // Save the score in the json file
-function saveScoreToFile(nbTry, userA) {
+function saveScoreToFile(nbTry, userA,score) {
     fs.readFile('score.json', 'utf8', (err, data) => {
         if (err) {
             console.error('Error reading JSON file:', err);
@@ -74,14 +57,14 @@ function saveScoreToFile(nbTry, userA) {
             return;
         }
         //Create the parameter for the json
-        const newUser = { pseudo: userA, score: 1, nbTry : nbTry };
+        const newUser = { pseudo: userA, score: score, nbTry : nbTry };
         //adapt it in the json format
         const { users } = jsonData;
         //search if the user already exist in the file, in order to either create it or add it in the existing one
         const existingUserIndex = users.findIndex(user => user.pseudo === newUser.pseudo);
         if (existingUserIndex !== -1) {
             // Update existing user
-            users[existingUserIndex].score = parseInt(users[existingUserIndex].score)+1;
+            users[existingUserIndex].score = parseInt(users[existingUserIndex].score)+score;
             users[existingUserIndex].nbTry = parseInt(users[existingUserIndex].nbTry)+ nbTry;
         } else {
             // Add new user

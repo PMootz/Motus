@@ -10,20 +10,21 @@
 <body>
   <nav>
     <a href="index.html">Authentification</a>
-    <a id="user"></a>
+    <a id="users"></a>
   </nav>
   <h1>Create a new account</h1>
-  <form>
-    <label for="log"> Create </label>
-    <input type="text" id="log" name="log">
+  <div id="mess"></div>
+  <form onsubmit="return validateForm()" action='/create' method="get">
+    <label for="user"> User </label>
+    <input type="text" id="user" name="user">
     <br/>
     <label for="pass"> Password </label>
     <input type="password" id="pass" name="pass">
     <br/>
     <label for="pass"> Confirm your password </label>
     <input type="password" id="pass2" name="pass2">
+    <button id="creation">Create</button>
    </form>
-   <button id="creation">Create</button>
    <div id="noAcc">Already have an account ? <a href="index.html">Click here</a></div>
    <div id="reponse"></div>
    <script src="js/register.js"></script>

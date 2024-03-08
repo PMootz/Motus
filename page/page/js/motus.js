@@ -19,14 +19,31 @@ $.get('/user', function(data){
   }
 })
 
+document.getElementById("user").addEventListener("click", function(event){
+  console.log("here")
+  $.get('/logout')
+})
+
 //When the page is open, call the api wordNb that return the number of letter in the word to guess
 $(document).ready(function(){
-  $.get('http://localhost:3000/wordNb',function(data){
-  var rNb= $('#nbTry');
-  value = parseInt(data)-1;
-  rNb.text("Le mot a trouver comporte " + value + " lettres")
+  $.get('/checkAccess', function(response){
+      if (response.status === "ok") {
+          // Access allowed, continue loading the page
+          $.get('http://localhost:3000/wordNb', function(data){
+              var rNb = $('#nbTry');
+              value = parseInt(data)-1;
+              rNb.text("Le mot à trouver comporte " + value + " lettres")
+          });
+      } else {
+          // Access denied, display message and redirect to index.html
+          $('#message').text(response.message);
+          $('#redirectMessage').show(); // Show message container
+          setTimeout(function() {
+              window.location.href = "/index.html";
+          }, 2000); // Redirect after 3 seconds
+      }
   });
-})
+});
 
 
 document.getElementById("Check").addEventListener("click", function(event){
@@ -60,7 +77,7 @@ document.getElementById("Check").addEventListener("click", function(event){
   nbTry--;
   for (var i = 0; i < data.length; i++) {
     // Create a new div for each character
-    var charDiv = $('<div>').text(answerValue[i]);
+    var charDiv = $('<div class ="box">').text(answerValue[i]);
     //Check if one of the letter isn't correct, to know if it is the good answer
     if(data[i] != 2){
       result = false;
@@ -75,10 +92,16 @@ document.getElementById("Check").addEventListener("click", function(event){
     resultA.text("Bonne réponse !");
     win=true;
       //Save the score in the Score API, for now we hope that score find the user, otherwise we will have to send it
-      $.get('http://localhost:3010/setScore?nb='+(5-nbTry))
+      $.get('http://localhost:3010/setScore?nb='+(5-nbTry)+'&sc=1')
   }
   else{
-    resultA.text("Mauvaise réponse, veuillez réessayer. Il vous reste " + nbTry + " chance");
+    if(nbTry ==0 ){
+      $.get('http://localhost:3010/setScore?nb='+(5-nbTry)+'&sc=0')
+      resultA.text("Vous venez de tentez toutes vos chances, vous avez perdu pour aujourd'hui");
+    }
+    else{
+      resultA.text("Mauvaise réponse, veuillez réessayer. Il vous reste " + nbTry + " chances");
+    }
   }
 });
 

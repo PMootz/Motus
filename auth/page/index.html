@@ -10,10 +10,11 @@
 <body>
   <nav>
     <a href="index.html">Authentification</a>
-    <a id="user"></a>
+    <a id="users"></a>
   </nav>
   <h1>Login</h1>
-  <form action="/login" method="get" >
+  <div id="mess"></div>
+  <form onsubmit="return validateForm()" action="/login" method="get" >
     <label for="user"> Login </label>
     <input type="text" id="user" name="user">
     <br/>
