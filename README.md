@@ -14,12 +14,18 @@ Lorsque le joueur se rend sur la page des scores, il peut y voir son score total
 
 Ce qui fonctionne :
 
-- Le jeu du Motus ainsi que le calcul des scores
+- Le jeu du Motus ainsi que le calcul des scores par utilisateur
 - L'authentification pour la création d'un users
-- La création d'une base de donnée Redis et les fonctions permettant de l'utiliser 
+- L'authentification depuis un user déjà créée
 
 
-Nous avons réussis à utiliser une base de données Redis pour stocker les scores, le nom d'utilisateur, le mot de passe et le nombre de tentatives. Nous avons séparé en trois parties distinctes : mot de passe, scores et nombre de tentatives. Nous avons réalisé les fonctions permettant d'enregistrer, de modifier et d'obtenir le score ou le nombre d'essaies à partir d'un nom d'utilisateur. Nous avons aussi réalisé la fonction permettant d'enregistrer un mot de passe avec un nom d'utilisateur ainsi qu'une méthode pour s'assurer que chaque nom d'utilisateur est unique.
+Nous avons utilisé une base json pour stocker les scores, le nom d'utilisateur, le mot de passe et le nombre de tentatives. Nous avons séparé en deux parties distinctes : mot de passe et scores, nombre de tentatives.
+Nous avons réalisé les fonctions permettant d'enregistrer, de modifier et d'obtenir le score ou le nombre d'essaies à partir d'un nom d'utilisateur. 
+Nous avons aussi réalisé la fonction permettant d'enregistrer un mot de passe avec un nom d'utilisateur ainsi qu'une méthode pour s'assurer que chaque nom d'utilisateur est unique.
+
+Nous pouvons nous déconnecté à tout moment en cliquant sur le nom d'utilisateur situé en haut à droite. Il faudra alors changé de page pour être redirigé vers l'authentification.
+
+Lorsqu'un utilisateur à déjà joué au jeux dans la journée, il ne peut plus y rejouer pour la journée. Cependant S'il se déconnecte et se reconnecte il peut à nouveau rejouer au jeux.
 
 Ce qui est en cours :
 
@@ -27,6 +33,11 @@ Ce qui est en cours :
 La sauvegarde de ficheier redis ne fonctionne pas totalement lorsque nous le mettons avec le jeu motus. Cela fonctionne uniquement sur l'interface Redis Insight.
 Nous n'arrivons pas à accéder au port 4000 que ce soit via axios ou requête HTTP malgré l'existence du port.
 Nous avons du repasser sur  json pour la base de données pour avoir quelque chose de fonctionnel.
+
+Redirigé directement vers l'authentification lorsque l'utilisateur a décidé de se déconnecté.
+Garder dans la base de donnée le dernier jour joué par le joueur pour l'empecher de rejouer.
+
+Avec le redis le score des 5 meilleurs joueurs plus celui de l'utilisateur devaient s'afficher mais les problèmes de redis ont fait arrêté la décision
 
 La haproxy est presque fonctionnel
 
