@@ -60,7 +60,7 @@ document.getElementById("Check").addEventListener("click", function(event){
   nbTry--;
   for (var i = 0; i < data.length; i++) {
     // Create a new div for each character
-    var charDiv = $('<div>').text(answerValue[i]);
+    var charDiv = $('<div class = "box">').text(answerValue[i]);
     //Check if one of the letter isn't correct, to know if it is the good answer
     if(data[i] != 2){
       result = false;

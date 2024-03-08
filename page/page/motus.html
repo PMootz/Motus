@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <title>Crounch Motus</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <title>Motus</title>
     <link rel="stylesheet" href="beauty.css">
 </head>
 <body>
@@ -12,15 +12,16 @@
     <a href="index.html">Acceuil</a>
     <a href="motus.html">Motus</a>
     <a href="score.html">Score</a>
+    <a href="http://localhost:3003" id="auth">Authentification</a>
     <a id="user"></a>
   </nav>
 <h1>MOTUS</h1>
 <div id="nbTry"></div>
-<form>
+<br>
  <label for="answer"> Réponse du Motus </label>
- <input type="text" id="answer" name="answer">
-</form>
-<button id="Check">Valider</button>
+  <div>
+ <input type="text" id="answer" name="answer"> <button id="Check">Valider</button>
+ </div>
 <br>
 <div id="result"></div>
 <div id="results-container"></div>
