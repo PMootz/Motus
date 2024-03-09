@@ -63,8 +63,6 @@ actor User
     Page->>+Auth: redirect
     User->>Auth: créer compte
     Auth->>Auth: create 
-    Auth ->>Redis: setPassword
-    Redis ->>Auth: getPassword
     Auth->>-Page: uri
     Page->>+Auth : token
     Auth->>-Page: new User
@@ -86,8 +84,6 @@ User->>+PC : Motus
         Page->>+Motus : check
         Motus->>-Page : check
         Page->>+Score : SetScore
-        Score->>Redis : setScore
-        Redis->>Score : getScore 
         Score-->>-Page : res
     end
     Page->>-PC : Jeu terminé
@@ -100,8 +96,6 @@ actor User
     User->>+PC : voir Score
     PC->>+Page : voir Score 
     Page->>+Score : GetScore
-    Score->>Redis : getScore
-    Redis->>Score : 
     Score->>-Page : res
     Page->>-PC : Afficher Score
 ```
@@ -117,10 +111,6 @@ flowchart LR
     B(Page) --->E(Score)
     E(Score) --->B(Page)
     A(User) -->D(Auth)
-    F[(Redis)] ---->D(Auth)
-    D(Auth) ---->F[(Redis)]
-    F[(Redis)] ---->E(Score)
-    E(Score) ---->F[(Redis)]
 ```
 
 ## Pistes d'améliorations
@@ -131,6 +121,9 @@ La première est que nous avons sur la même base de donnée la partie authentif
 De plus la fonction permettant d'obtenir le classement des meilleurs joueurs avec leur scores ne fonctionne pas correctement en effet en termes d'affichage sur Redis Insight le score est considéré comme un nom d'utilisateur et apparaît la ligne en dessous du nom de l'utilisateur à qui le score lui est associé.
 
 Modifier le jeu motus afin d'interdire une combinaison de lettres ne formant pas un mot français d'être testé par le programme.
+
+Les connexions sont epu sécurisé ainsi que les sessions, ce qu'on aurait pu améliorer aussi en utilisants les ressources disponibles.
+Bien évidement le monitoring n'a pas pu être implémenté, ce qu'on souhaitais faire
 
 Nous avons encore des difficultés à relier les authentifications avec le programme réalisé sur Redis nous avons des erreurs avec les axios et les requêtes HTTP nous n'arrivons pas à accéder au port 4000 malgré sone existence.
 
