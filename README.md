@@ -27,6 +27,9 @@ Nous pouvons nous déconnecter à tout moment en cliquant sur le nom d'utilisate
 
 Lorsqu'un utilisateur à déjà joué au jeu dans la journée, il ne peut plus y rejouer de la journée. Cependant s'il se déconnecte et se reconnecte il peut à nouveau y rejouer.
 
+L'authentification marche avec oauth2, avec une confirmation de code qui utilise après un token jwt pour sécurisé le contenu.
+Il en va de même pour les mot de passe qui sont crypté en sha256
+
 Ce qui est en cours :
 
 
