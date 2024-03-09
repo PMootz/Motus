@@ -20,16 +20,18 @@ const getRandomIndex = () => {  const currentDate = new Date().toISOString().spl
   return Math.floor(rng() * wordsArray.length);
   };
 
-  //take a random word
+  //take a random word in the list
 const wordD=String(wordsArray[getRandomIndex()]); 
 
 
+//Give the word chosen for the day
 app.get('/word', (req, res) => {
   // Return the random word
   res.setHeader("Access-Control-Allow-Origin","*")
   res.json({wordD});
 });
 
+//Give the chosen word length
 app.get('/wordNb', (req, res) => {
   // Return the word size
   res.setHeader("Access-Control-Allow-Origin","*")

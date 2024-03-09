@@ -19,6 +19,7 @@ $.get('/user', function(data){
   }
 })
 
+//Set the logout 
 document.getElementById("user").addEventListener("click", function(event){
   console.log("here")
   $.get('/logout')
@@ -34,13 +35,14 @@ $(document).ready(function(){
               value = parseInt(data)-1;
               rNb.text("Le mot à trouver comporte " + value + " lettres")
           });
+          //the user has already played the game today
       } else {
           // Access denied, display message and redirect to index.html
           $('#message').text(response.message);
           $('#redirectMessage').show(); // Show message container
           setTimeout(function() {
               window.location.href = "/index.html";
-          }, 2000); // Redirect after 3 seconds
+          }, 2000); // Redirect after 2 seconds
       }
   });
 });
@@ -91,11 +93,12 @@ document.getElementById("Check").addEventListener("click", function(event){
   if(result){
     resultA.text("Bonne réponse !");
     win=true;
-      //Save the score in the Score API, for now we hope that score find the user, otherwise we will have to send it
+      //Save the score in the Score API
       $.get('http://localhost:3010/setScore?nb='+(5-nbTry)+'&sc=1')
   }
   else{
     if(nbTry ==0 ){
+      //Save the score in th Score API but with 0 because failed the game
       $.get('http://localhost:3010/setScore?nb='+(5-nbTry)+'&sc=0')
       resultA.text("Vous venez de tentez toutes vos chances, vous avez perdu pour aujourd'hui");
     }
@@ -109,7 +112,7 @@ document.getElementById("Check").addEventListener("click", function(event){
 function getColorForCharacter(char) {
   switch (char) {
     case 0:
-      return 'color-0'; // or any color you want for 0
+      return 'color-0'; 
     case 1:
       return 'color-1';
     case 2:

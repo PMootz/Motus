@@ -16,6 +16,7 @@ app.use(session({
 }));
 
 
+//Function to be called in order to ask the auth API to give the user corresponding to the code
 app.get('/uri',function (req, res) {
   if (req.query.code){
       res.setHeader("Access-Control-Allow-Origin","*")
@@ -23,6 +24,7 @@ app.get('/uri',function (req, res) {
   }
 })
 
+//Function that recieve the jwt token user after sending the code and save it as session user
 app.get('/newUser', function(req,res){
   const token = req.query.token;
   jwt.verify(token, secretKey, (err, decoded) => {
@@ -43,6 +45,7 @@ app.get('/newUser', function(req,res){
 
 })
 
+//For every call beneth it, it will check if the user is authentified, if not it will redirect him
 app.use((req, res,next) => {
   if (req.session.user) {
     const user = req.session.user;
@@ -50,6 +53,7 @@ app.use((req, res,next) => {
     next();
   } 
   else {
+    //redirect the user
     console.log('No session data found : ' + req.session.user);
         const redirectUrl = 'http://localhost:3003/authorize';
         const openidParams = {
@@ -73,18 +77,21 @@ app.get('/user', function (req, res) {
   }
 })
 
+//Get called by motus page in order to give the user to score
 app.get('/setScore', function (req,res){
     req.session.lastPlayedDate = new Date().toDateString();
     res.setHeader("Access-Control-Allow-Origin","*")
     res.redirect('http://localhost:3008/setScore?nb='+req.query.nb+'&user='+req.session.user+'&score='+req.query.sc)
 })
 
+//get called in order to ask the score for the actual user
 app.get('/getScore', function (req,res){
   res.setHeader("Access-Control-Allow-Origin","*")
   res.redirect('http://localhost:3008/getScore?user='+req.session.user)
 
 })
 
+//Logout the user and redirect him, hopping the app.use will automaticaly redirect him to the authentification
 app.get('/logout', function (req,res){
   if(req.session.user){
     req.session.user = undefined
@@ -92,6 +99,7 @@ app.get('/logout', function (req,res){
   }
 })
 
+//Function that check if the current user has already played the game today or not
 app.get('/checkAccess', function(req, res) {
   const currentDate = new Date().toDateString();
   const lastPlayedDate = req.session.lastPlayedDate;

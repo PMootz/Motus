@@ -19,11 +19,12 @@ var dataArray
         tableBody.appendChild(row)
     })
 
+//Set the logout 
+document.getElementById("user").addEventListener("click", function(event){
+    console.log("here")
+    $.get('/logout')
+})
 
-    document.getElementById("user").addEventListener("click", function(event){
-        console.log("here")
-        $.get('/logout')
-    })
 //Show user if connected
 $.get('/user', function(data){
     if(!(data === 'undefined')){

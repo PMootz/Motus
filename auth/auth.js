@@ -10,6 +10,7 @@ const app = express()
 
 app.listen(3003);
 
+//create a session
 app.use(session({
   secret: 'secret-key',
   resave: false,
@@ -18,7 +19,6 @@ app.use(session({
     maxAge: 3600000}
 }));
 
-// Initialize session storage.
 app.use(express.static('page'));
 
 app.use(express.json());
@@ -34,6 +34,7 @@ var mess2 = ""
 const codeStore = [];
 const secretKey = 'Crounch';
 
+//check if the API call is authorized with the correct parameters
 app.get('/authorize', (req, res) => {
   const { client_id, scope, redirect_uri } = req.query;
   // Perform the client id check
@@ -60,12 +61,14 @@ app.get('/authorize', (req, res) => {
      res.redirect('/')
    })
 
+   //display the user
 app.get('/user', function (req, res) {
     if (!(req.session.user === "undefined")){
         res.send(escapeHtml(req.session.user))
     }
 })
 
+//display the session info
 app.get("/session",(req,res)=>{
     res.json(req.session)
 })
@@ -83,6 +86,7 @@ app.get('/create', function (req, res) {
       }
 
       if (result) {
+        //save the user in the session
           req.session.user = req.query.user;
           const code = Math.random().toString(36).substr(2, 12).toUpperCase();
           let user = req.session.user;
@@ -90,6 +94,7 @@ app.get('/create', function (req, res) {
           // Store code along with client login information
           codeStore.push({ user, code });
           res.setHeader('Access-Control-Allow-Origin', '*');
+          //send back a code
           return res.redirect(`${uri}?code=${code}`);
       } else {
           mess2 = "The id is already taken";
@@ -98,6 +103,7 @@ app.get('/create', function (req, res) {
   });
 });
 
+//Test in order to interact ith redis
 /*app.get('/create', function (req, res) {
   mess2 = "";
   let username = req.query.user;
@@ -137,6 +143,7 @@ app.get('/login', express.urlencoded({ extended: false }), function (req, res) {
     mess =""
     req.session.regenerate(function (err) {
       if (err) next(err)
+      //logout, in case of new authentification
       if(req.session.user) {
         req.session.user=null
       }
@@ -154,6 +161,7 @@ app.get('/login', express.urlencoded({ extended: false }), function (req, res) {
           // Store code along with client login information
           codeStore.push({ user, code});
           res.setHeader('Access-Control-Allow-Origin', '*');
+          //send back a code
           res.redirect(`${uri}?code=${code}`)
           }
           else {
@@ -165,6 +173,7 @@ app.get('/login', express.urlencoded({ extended: false }), function (req, res) {
     })
   })
 
+  //test in order to create a user with redis
   /*app.get('/login', express.urlencoded({ extended: false }), function (req, res) {
     // login logic to validate req.body.user and req.body.pass
     // would be implemented here. for this example any combo works
@@ -224,6 +233,7 @@ app.get('/login', express.urlencoded({ extended: false }), function (req, res) {
         res.redirect('/');
   })
 
+  //Check if the code received is in his database and if it is, return in jwt the user associated
   app.get('/token',function (req, res) {  
     var code = req.query.code;
     const entry = codeStore.find(entry => entry.code === code);
@@ -239,13 +249,13 @@ app.get('/login', express.urlencoded({ extended: false }), function (req, res) {
         }
     
         // Return the token in the response
-        //res.json({ id_token: token });
       res.setHeader("Access-Control-Allow-Origin","*")
       res.redirect(`http://localhost:3010/newUser?token=${token}`);
     })
   }
   })
 
+    //Return the error message in the login form
   app.get('/mess',function (req, res) {
     if (!(mess === "")){
         res.send(escapeHtml(mess))
@@ -255,6 +265,7 @@ app.get('/login', express.urlencoded({ extended: false }), function (req, res) {
     }
 })
 
+//return the error message in the register form
 app.get('/mess2',function (req, res) {
   if (!(mess2 === "")){
       res.send(escapeHtml(mess2))

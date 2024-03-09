@@ -4,6 +4,7 @@ const fs = require('fs');
 const app = express();
 const port = 3008;
 
+//Apply the header cors in order to receive correctly some message
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS'); // Add other methods if necessary
@@ -13,6 +14,11 @@ app.use((req, res, next) => {
 
 
 //Set score of the user in the json file
+/**
+ * Input : nbTr, number of try
+ * user : the user name
+ * score : 0 if failed 1 otherwise
+ */
 app.get('/setScore', (req, res) => {
     let nbTr = parseInt(req.query.nb)
     let user = req.query.user
@@ -24,6 +30,10 @@ app.get('/setScore', (req, res) => {
 });
 
 //Get the score from the connected user
+/**
+ * Input : user
+ * Ouput : score of the user, nbTry/score and the user
+ */
 app.get('/getScore', (req, res) => { 
     let user =req.query.user
     //search the user in the json

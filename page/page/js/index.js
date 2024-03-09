@@ -5,6 +5,7 @@ $.get('/user', function(data){
     }
 })
 
+//Set the logout 
 document.getElementById("user").addEventListener("click", function(event){
     console.log("here")
     $.get('/logout')
